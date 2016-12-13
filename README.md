@@ -1,2 +1,2 @@
-# Pokedex
-Pokedex create with java.
+# Pokedeck
+Pokedeck create with java.
