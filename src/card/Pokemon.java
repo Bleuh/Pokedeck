@@ -10,9 +10,19 @@ public class Pokemon extends Card{
 	private Type type;
 	private int stage;
 	private List<Abilitie> listAbilitie;
+	private static String cardName = "POKEMON";
 	
-	public Pokemon(String name, int number, int hp, String pokemonName, Type type, int stage, List<Abilitie> listAbilitie) {
-		super(name, number);
+	public Pokemon(int number, String pokemonName, int hp, Type type, int stage, List<Abilitie> listAbilitie) {
+		super(cardName, number);
+		this.hp = hp;
+		this.pokemonName = pokemonName;
+		this.type = type;
+		this.stage = stage;
+		this.listAbilitie = listAbilitie;
+	}
+	
+	public Pokemon(String pokemonName, int hp, Type type, int stage, List<Abilitie> listAbilitie) {
+		super(cardName);
 		this.hp = hp;
 		this.pokemonName = pokemonName;
 		this.type = type;
