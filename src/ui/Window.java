@@ -15,6 +15,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import card.Abilitie;
+import card.Pokemon;
 import card.Type;
 
 public class Window{
@@ -71,10 +73,12 @@ public class Window{
 		JPanel template = new JPanel();
 
 		template.add(new JLabel("Nom :"));
-	    template.add(new JTextField(20));
+		JTextField name = new JTextField(20);
+	    template.add(name);
 	    
 	    template.add(new JLabel("Point de vie :"));
-	    template.add(new JTextField(4));
+		JTextField hp = new JTextField(4);
+	    template.add(hp);
 		
 		template.add(new JLabel("Type :"));
 		JComboBox<Object> combo = new JComboBox<Object>();
@@ -91,6 +95,23 @@ public class Window{
 	    comboStage.addItem(2);
 	    comboStage.addItem(3);
 	    template.add(comboStage);
+	    
+	    JButton submit = new JButton("Ajouter");
+	    submit.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+	        	String pokemonName = name.getText();
+	        	String hpText = hp.getText();
+	        	Integer pokemonHp = Integer.parseInt(hpText);
+	        	Type pokemonType = (Type)combo.getSelectedItem();
+	        	Integer pokemonStage = (Integer)comboStage.getSelectedItem();
+	        	Pokemon.addPokemon(new Pokemon(pokemonName, pokemonHp ,pokemonType, pokemonStage, null));
+	        	
+		        frame.setTitle("Accueil");
+		    	itemChanged("accueil");
+	        }
+	    });
+	    
+	    template.add(submit);
 	    
 		template.add(buttonHome);
 		
