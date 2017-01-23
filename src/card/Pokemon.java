@@ -32,6 +32,26 @@ public class Pokemon extends Card{
 		this.listAbilitie = listAbilitie;
 	}
 	
+	public int getHp() {
+		return hp;
+	}
+
+	public String getPokemonName() {
+		return pokemonName;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public int getStage() {
+		return stage;
+	}
+
+	public List<Abilitie> getListAbilitie() {
+		return listAbilitie;
+	}
+
 	public static void addPokemon(Pokemon p){
 		pokemonList.add(p);
 	}

@@ -24,6 +24,10 @@ public class Type{
 		return this.typeName;
 	}
 	
+	public String getTypeName() {
+		return typeName;
+	}
+
 	public Color getColor(){
 		return this.color;
 	}
