@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import application.FileUtil;
 import card.Abilitie;
 import card.Pokemon;
 import card.Type;
@@ -24,12 +25,14 @@ public class Window{
 	private static JPanel cards;
 	private static JFrame frame = new JFrame();
 	private static JButton buttonHome = new JButton("Accueil");
+	private FileUtil fileUtil;
     private String name;
     private final int tailleX = 500;
     private final int tailleY = 500;
 	
 	public Window(String name){
         this.name = name;
+        this.fileUtil = new FileUtil("data.txt");
 		this.buttonHome.addActionListener(new ChangeCard("accueil", "Accueil"));
         this.frame.setTitle(name);
         this.frame.setSize (tailleX , tailleX);
@@ -104,7 +107,7 @@ public class Window{
 	        	Integer pokemonHp = Integer.parseInt(hpText);
 	        	Type pokemonType = (Type)combo.getSelectedItem();
 	        	Integer pokemonStage = (Integer)comboStage.getSelectedItem();
-	        	Pokemon.addPokemon(new Pokemon(pokemonName, pokemonHp ,pokemonType, pokemonStage, null));
+	        	fileUtil.write(new Pokemon(pokemonName, pokemonHp ,pokemonType, pokemonStage, null));
 	        	
 		        frame.setTitle("Accueil");
 		    	itemChanged("accueil");

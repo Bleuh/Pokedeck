@@ -1,11 +1,12 @@
 package application;
 
+import java.awt.Color;
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.json.simple.JSONArray;
@@ -18,48 +19,50 @@ import card.Pokemon;
 import card.Type;
 
 public class FileUtil {
-	
+
 	private String filePath;
 	private List<Pokemon> pokemons;
 	private JSONParser parser = new JSONParser();
-	
+
 	public FileUtil(String name){
 		this.filePath = name;
 	    this.pokemons = new ArrayList<Pokemon>();
-	    
-//	    this.read();
+
+	    this.read();
 	}
-	
-	public List getPokemon() {
+
+	public List<Pokemon> getPokemon() {
 		return pokemons;
 	}
-	
+
 	public void read(){
 		try {
-			Object obj = (JSONArray)parser.parse(new FileReader(filePath));   
-			JSONObject jsonObject = (JSONObject) obj;
-//			for (Object jsonObjet : jsonArray){
-//			    JSONObject pokemon = (JSONObject) jsonObjet;
-//
-//			    String name = (String) pokemon.get("name");
-//			    System.out.println(name);
-//			    Integer hp = (Integer) pokemon.get("hp");
-//			    System.out.println(hp);
-//			    Type type = (Type) pokemon.get("type");
-//			    System.out.println(type);
-//			    Integer stage = (Integer) pokemon.get("stage");
-//			    System.out.println(stage);
-//
-//			    JSONArray abilities = (JSONArray) pokemon.get("abilities");
-//			    List<Abilitie> listAbilitie = new ArrayList<Abilitie>();
-//			    if(abilities != null){
-//				    for (Object abilitie : abilities){
-//				      listAbilitie.add((Abilitie) abilitie);
-//				    }
-//			    }
-//			    System.out.println(listAbilitie);
-//	        	this.pokemons.add(new Pokemon(name, hp ,type, stage, listAbilitie));
-//			}
+			String ligne ;
+			BufferedReader fichier = new BufferedReader(new FileReader(this.filePath));
+			while ((ligne = fichier.readLine()) != null) {
+				JSONObject pokemon = (JSONObject) parser.parse(ligne);
+				String name = (String) pokemon.get("name");
+			    Integer hp = Math.toIntExact((long) pokemon.get("hp"));
+			    
+			    JSONObject typeJson = (JSONObject) pokemon.get("type");
+			    Type type = null;
+			    if(!typeJson.isEmpty()){
+				    type = new Type((String) typeJson.get("name"), new Color(Math.toIntExact( (long) typeJson.get("color"))));
+			    }
+			    
+			    Integer stage = Math.toIntExact((long) pokemon.get("stage"));
+
+			    JSONArray abilities = (JSONArray) pokemon.get("abilities");
+			    List<Abilitie> listAbilitie = new ArrayList<Abilitie>();
+			    if(!abilities.isEmpty()){
+				    for (int n = 0; n < abilities.size(); n++){
+				    	JSONObject obj = (JSONObject) abilities.get(n);
+				    	listAbilitie.add(new Abilitie((String) obj.get("name"), Math.toIntExact( (long) obj.get("power")), (String) obj.get("description")));
+				    }
+			    }
+	        	this.pokemons.add(new Pokemon(name, hp ,type, stage, listAbilitie));
+			}
+			fichier.close();
 		} catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -68,38 +71,41 @@ public class FileUtil {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void write(Pokemon pokemon){
 		JSONObject obj = new JSONObject();
 		obj.put("name", pokemon.getPokemonName());
 		obj.put("hp", pokemon.getHp());
-		
+
 		Type typePokemon = pokemon.getType();
-		JSONArray type = new JSONArray();
+		JSONObject type = new JSONObject();
 		if(typePokemon != null){
-			type.add("name:" + typePokemon.getTypeName());
-			type.add("color:" + typePokemon.getColor());
+			type.put("name", typePokemon.getTypeName());
+			type.put("color", typePokemon.getColor().getRGB());
 		}
 		obj.put("type", type);
-		
+
+		obj.put("stage", pokemon.getStage());
+
 		List<Abilitie> abilitiesPokemon = pokemon.getListAbilitie();
-		JSONObject abilities = new JSONObject();
+		JSONArray abilities = new JSONArray();
 		if(abilitiesPokemon != null){
 			for (Abilitie abilitiePokemon : abilitiesPokemon){
-				JSONArray abilitie = new JSONArray();
-				abilitie.add("name" + abilitiePokemon.getAbilitieName());
-				abilitie.add("power" + abilitiePokemon.getPower());
-				abilitie.add("description" + abilitiePokemon.getDescription());
-				abilities.put("", abilitie);
+				JSONObject abilitie = new JSONObject();
+				abilitie.put("name", abilitiePokemon.getAbilitieName());
+				abilitie.put("power", abilitiePokemon.getPower());
+				abilitie.put("description", abilitiePokemon.getDescription());
+				abilities.add(abilitie);
 			}
 		}
 		obj.put("abilities", abilities);
-		
-		try (FileWriter file = new FileWriter(filePath)) {
-			file.write(obj.toJSONString());
-			System.out.println("Successfully Copied JSON Object to File...");
-			System.out.println("\nJSON Object: " + obj);
-			this.read();
+
+		try (FileWriter file = new FileWriter(filePath, true)) {
+			file.write(obj.toJSONString() + System.lineSeparator());
+			this.pokemons.add(pokemon);
+			file.flush();
+			System.out.println("Le pokemon a ete ajouter: " + obj);
+			file.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

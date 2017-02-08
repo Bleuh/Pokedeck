@@ -11,7 +11,6 @@ public class Pokemon extends Card{
 	private Type type;
 	private int stage;
 	private List<Abilitie> listAbilitie;
-	public static List<Pokemon> pokemonList = new ArrayList<Pokemon>();
 	private static String cardName = "POKEMON";
 	
 	public Pokemon(int number, String pokemonName, int hp, Type type, int stage, List<Abilitie> listAbilitie) {
@@ -50,10 +49,6 @@ public class Pokemon extends Card{
 
 	public List<Abilitie> getListAbilitie() {
 		return listAbilitie;
-	}
-
-	public static void addPokemon(Pokemon p){
-		pokemonList.add(p);
 	}
 	
 }
