@@ -50,5 +50,10 @@ public class Pokemon extends Card{
 	public List<Abilitie> getListAbilitie() {
 		return listAbilitie;
 	}
+
+	@Override
+	public String toString() {
+		return this.pokemonName;
+	}
 	
 }

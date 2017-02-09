@@ -1,1 +1,2 @@
-{"abilities":[],"stage":2,"name":"Test","hp":21,"type":{"color":-16711936,"name":"PLANTE"}}
+{"abilities":[],"stage":1,"name":"tt","hp":12,"type":{"color":-16776961,"name":"EAU"}}
+{"abilities":[],"stage":1,"name":"EE","hp":12,"type":{"color":-16776961,"name":"EAU"}}

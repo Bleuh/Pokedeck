@@ -17,16 +17,19 @@ import org.json.simple.parser.ParseException;
 import card.Abilitie;
 import card.Pokemon;
 import card.Type;
+import ui.Window;
 
 public class FileUtil {
 
 	private String filePath;
 	private List<Pokemon> pokemons;
+	private Window window;
 	private JSONParser parser = new JSONParser();
 
-	public FileUtil(String name){
+	public FileUtil(String name, Window window){
 		this.filePath = name;
 	    this.pokemons = new ArrayList<Pokemon>();
+	    this.window = window;
 
 	    this.read();
 	}
@@ -109,6 +112,7 @@ public class FileUtil {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		window.pokemonUpdate();
 	}
 
 }
