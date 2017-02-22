@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -66,18 +67,14 @@ public class Window{
 		buttonAddPokemon.addActionListener(new ChangeCard("addPokemon", "Ajouter un pokemon"));
 		accueil.add(buttonAddPokemon);
 		
-		JButton buttonViewPokemon = new JButton("Voir les pokemon");
-		buttonViewPokemon.addActionListener(new ChangeCard("viewPokemon", "Les pokemon"));
-		accueil.add(buttonViewPokemon);
-		
-		JButton buttonUpdatePokemon = new JButton("Modifier un pokemon");
-		buttonUpdatePokemon.addActionListener(new ChangeCard("updatePokemon", "Modifier un pokemon"));
-		accueil.add(buttonUpdatePokemon);
+		JButton buttonViewUpdatePokemon = new JButton("Voir / Modifier les pokemons");
+		buttonViewUpdatePokemon.addActionListener(new ChangeCard("viewUpdatePokemon", "Pokedex"));
+		accueil.add(buttonViewUpdatePokemon);
 		
         this.cards = new JPanel(new CardLayout());
         this.cards.add(accueil, "accueil");
         this.cards.add(getTemplateAddPokemon("addPokemon"), "addPokemon");
-        this.cards.add(getTemplateViewPokemon("viewPokemon"), "viewPokemon");
+        this.cards.add(getTemplateViewUpdatePokemon("viewUpdatePokemon"), "viewUpdatePokemon");
         
         this.frame.add(cards);
 		
@@ -123,15 +120,25 @@ public class Window{
 	    JButton submit = new JButton("Ajouter");
 	    submit.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
-	        	String pokemonName = name.getText();
-	        	String hpText = hp.getText();
-	        	Integer pokemonHp = Integer.parseInt(hpText);
-	        	Type pokemonType = (Type)combo.getSelectedItem();
-	        	Integer pokemonStage = (Integer)comboStage.getSelectedItem();
-	        	fileUtil.write(new Pokemon(pokemonName, pokemonHp ,pokemonType, pokemonStage, null));
-	        	
-		        frame.setTitle("Accueil");
-		    	itemChanged("accueil");
+	        	if(name.getText().equals("")){
+	        		JOptionPane d = new JOptionPane();
+	        		d.showMessageDialog( frame, "Le nom est vide", "Erreur", JOptionPane.ERROR_MESSAGE);
+	        	}
+	        	else if(hp.getText().equals("")){
+	        		JOptionPane d = new JOptionPane();
+	        		d.showMessageDialog( frame, "Les hp sont vide", "Erreur", JOptionPane.ERROR_MESSAGE);
+	        	}
+	        	else{
+		        	String pokemonName = name.getText();
+		        	String hpText = hp.getText();
+		        	Integer pokemonHp = Integer.parseInt(hpText);
+		        	Type pokemonType = (Type)combo.getSelectedItem();
+		        	Integer pokemonStage = (Integer)comboStage.getSelectedItem();
+		        	fileUtil.write(new Pokemon(pokemonName, pokemonHp ,pokemonType, pokemonStage, null));
+		        	
+			        frame.setTitle("Accueil");
+			    	itemChanged("accueil");
+	        	}
 	        }
 	    });
 	    
@@ -144,7 +151,7 @@ public class Window{
 		return template;
 	}
 	
-	private JPanel getTemplateViewPokemon(String nameTemplate){
+	private JPanel getTemplateViewUpdatePokemon(String nameTemplate){
 		
 		JPanel template = new JPanel();
 		template.setName(nameTemplate);
@@ -153,22 +160,38 @@ public class Window{
 		
 		String firstName = "";
 		String firstHp = "";
-		String firstStage = "";
-		String firstType = "";
+		int firstStage = 0;
+		Type firstType = null;
 		
 		if(!pokemons.isEmpty()){
 			Pokemon firstPokemon = pokemons.get(0);
 			
 			firstName = firstPokemon.getPokemonName();
 			firstHp = String.valueOf(firstPokemon.getHp());
-			firstStage = String.valueOf(firstPokemon.getStage());
-			firstType = firstPokemon.getType().getTypeName();
+			firstStage = firstPokemon.getStage() - 1; //index start to 0
+			firstType = firstPokemon.getType();
 		}
 		
-		JLabel name = new JLabel(firstName);
-		JLabel hp = new JLabel(firstHp);
-		JLabel stage = new JLabel(firstStage);
-		JLabel type = new JLabel(firstType);
+		JTextField name = new JTextField(firstName);
+		JTextField hp = new JTextField(firstHp);
+		
+	    JComboBox<Object> comboStage = new JComboBox<Object>();
+	    comboStage.addItem(1);
+	    comboStage.addItem(2);
+	    comboStage.addItem(3);
+	    comboStage.setSelectedIndex(firstStage);
+		
+	    JComboBox<Object> comboType = new JComboBox<Object>();
+		comboType.setPreferredSize(new Dimension(100, 20));
+		int indexType = 0;int index = 0;
+		for (Type type : Type.pokemonType) {
+		    comboType.addItem(type);
+		    if(firstType != null && type.getTypeName().equals(firstType.getTypeName())){
+		    	indexType = index;
+		    }
+		    index++;
+		}
+		comboType.setSelectedIndex(indexType);
 
 		Panel dropdownP = new Panel();
 		dropdownP.add(new JLabel("Pokemon :"));
@@ -185,8 +208,15 @@ public class Window{
 			       Pokemon item = (Pokemon) e.getItem();
 			       name.setText(item.getPokemonName());
 			       hp.setText(String.valueOf(item.getHp()));
-				   stage.setText(String.valueOf(item.getStage()));
-				   type.setText(item.getType().getTypeName());
+			       comboStage.setSelectedIndex(item.getStage() - 1);
+			       int indexType = 0;int index = 0;
+			       for (Type type : Type.pokemonType) {
+					   if(type.getTypeName().equals(item.getType().getTypeName())){
+						   indexType = index;
+					   }
+					   index++;
+			       }
+			       comboType.setSelectedIndex(indexType);
 			    }
 			}
 		});
@@ -205,13 +235,44 @@ public class Window{
 		
 	    Panel stageP = new Panel();
 	    stageP.add(new JLabel("Stage :"));
-	    stageP.add(stage);
+	    stageP.add(comboStage);
 	    template.add(stageP);
 
 	    Panel typeP = new Panel();
 	    typeP.add(new JLabel("Type :"));
-	    typeP.add(type);
+	    typeP.add(comboType);
 	    template.add(typeP);
+	    if(firstType != null){
+		    JButton submit = new JButton("Modifier");
+		    submit.addActionListener(new ActionListener() {
+		        public void actionPerformed(ActionEvent e) {
+		        	String pokemonName = name.getText();
+		        	String hpText = hp.getText();
+		        	Integer pokemonHp = Integer.parseInt(hpText);
+		        	Type pokemonType = (Type)comboType.getSelectedItem();
+		        	Integer pokemonStage = (Integer)comboStage.getSelectedItem();
+		        	fileUtil.update(new Pokemon(pokemonName, pokemonHp ,pokemonType, pokemonStage, null), combo.getSelectedIndex());
+		        	
+			        frame.setTitle("Accueil");
+			    	itemChanged("accueil");
+		        }
+		    });
+		    
+		    template.add(submit);
+		    
+		    JButton delete = new JButton("Supprimer");
+		    delete.addActionListener(new ActionListener() {
+		        public void actionPerformed(ActionEvent e) {
+		        	fileUtil.delete(combo.getSelectedIndex());
+		        	
+			        frame.setTitle("Accueil");
+			    	itemChanged("accueil");
+		        }
+		    });
+		    
+		    template.add(delete);
+	    	
+	    }
 	    
 	    JButton home = new JButton("Accueil");
 		home.addActionListener(new ChangeCard("accueil", "Accueil"));
@@ -224,9 +285,9 @@ public class Window{
 		Component[] components = this.cards.getComponents();
 
 		for(int i = 0; i < components.length; i++) {
-		    if(components[i].getName().equals("viewPokemon")) {
+		    if(components[i].getName().equals("viewUpdatePokemon")) {
 		    	this.cards.remove(components[i]);
-		        this.cards.add(getTemplateViewPokemon("viewPokemon"), "viewPokemon");
+		        this.cards.add(getTemplateViewUpdatePokemon("viewUpdatePokemon"), "viewUpdatePokemon");
 		    }
 		}   
 	}
@@ -234,6 +295,7 @@ public class Window{
 	public void itemChanged(String name) {
         CardLayout cl = (CardLayout)(cards.getLayout());
         cl.show(cards, name);
+        this.frame.repaint();
     }
 	
 	public void display(){

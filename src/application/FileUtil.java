@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,6 +78,49 @@ public class FileUtil {
 	}
 
 	public void write(Pokemon pokemon){
+		JSONObject obj = jsonmaker(pokemon);
+		try (FileWriter file = new FileWriter(filePath, true)) {
+			file.write(obj.toJSONString() + System.lineSeparator());
+			this.pokemons.add(pokemon);
+			file.flush();
+			System.out.println("Le pokemon a ete ajouter: " + obj);
+			file.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		window.pokemonUpdate();
+	}
+	
+	public void update(Pokemon pokemon, int index){
+		JSONObject obj = jsonmaker(pokemon);
+		
+		List<String> lines;
+		try {
+			lines = Files.readAllLines(Paths.get(filePath));
+			lines.set(index, obj.toJSONString());
+			Files.write(Paths.get(filePath), lines);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		this.pokemons.clear();
+		this.read();
+		window.pokemonUpdate();
+	}
+
+	public void delete(int index) {
+		List<String> lines;
+		try {
+			lines = Files.readAllLines(Paths.get(filePath));
+			lines.remove(index);
+			Files.write(Paths.get(filePath), lines);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		this.pokemons.remove(index);
+		window.pokemonUpdate();
+	}
+	
+	private JSONObject jsonmaker(Pokemon pokemon){
 		JSONObject obj = new JSONObject();
 		obj.put("name", pokemon.getPokemonName());
 		obj.put("hp", pokemon.getHp());
@@ -102,17 +147,8 @@ public class FileUtil {
 			}
 		}
 		obj.put("abilities", abilities);
-
-		try (FileWriter file = new FileWriter(filePath, true)) {
-			file.write(obj.toJSONString() + System.lineSeparator());
-			this.pokemons.add(pokemon);
-			file.flush();
-			System.out.println("Le pokemon a ete ajouter: " + obj);
-			file.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		window.pokemonUpdate();
+		return obj;
+		
 	}
 
 }
