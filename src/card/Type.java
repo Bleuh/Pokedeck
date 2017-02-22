@@ -9,9 +9,22 @@ public class Type{
 	private Color color;
 	public static List<Type> pokemonType = Arrays.asList(
 	  new Type("EAU", Color.BLUE), 
-	  new Type("FEU", Color.RED), 
+	  new Type("FEU", Color.ORANGE), 
 	  new Type("PLANTE", Color.GREEN), 
-	  new Type("PSY", Color.PINK) 
+	  new Type("PSY", Color.PINK),
+	  new Type("NORMAL", Color.GRAY),
+	  new Type("POISON", Color.MAGENTA),
+	  new Type("ELECTRIK", Color.YELLOW),
+	  new Type("GLACE", Color.CYAN),
+	  new Type("COMBAT", Color.RED),
+	  new Type("SOL", Color.ORANGE),
+	  new Type("VOL", Color.CYAN),
+	  new Type("INSECTE", Color.GREEN),
+	  new Type("ROCHE", Color.ORANGE),
+	  new Type("SPECTRE", Color.MAGENTA),
+	  new Type("DRAGON", Color.BLUE),
+	  new Type("TENEBRES", Color.DARK_GRAY),
+	  new Type("ACIER", Color.LIGHT_GRAY)
 	);
 	
 	public Type(String typeName, Color color) {

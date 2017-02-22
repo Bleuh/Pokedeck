@@ -1,8 +1,7 @@
 package ui;
 
-import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Panel;
@@ -10,11 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -48,21 +45,13 @@ public class Window{
 	private class ChangeCard implements ActionListener {
 
 	    private String name, title;
-	    private int x = tailleX, y = tailleY;
 	    private ChangeCard(String name, String title) {
 	        this.name = name;
 	        this.title = title;
 	    }
-	    private ChangeCard(String name, String title, int x, int y) {
-	        this.name = name;
-	        this.title = title;
-	        this.x = x;
-	        this.y = y;
-	    }
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 	        frame.setTitle(title);
-	        frame.setSize (this.x , this.y);
 	    	itemChanged(name);
 	    }
 
@@ -70,7 +59,8 @@ public class Window{
 	
 	private void addToFrame(){
 		JPanel accueil = new JPanel();
-		accueil.setLayout(new GridLayout(4, 3));
+		accueil.setLayout(new GridLayout(3, 3));
+		accueil.setName("accueil");
 		
 		JButton buttonAddPokemon = new JButton("Ajouter un pokemon");
 		buttonAddPokemon.addActionListener(new ChangeCard("addPokemon", "Ajouter un pokemon"));
@@ -80,28 +70,23 @@ public class Window{
 		buttonViewPokemon.addActionListener(new ChangeCard("viewPokemon", "Les pokemon"));
 		accueil.add(buttonViewPokemon);
 		
-		JButton addPokemonType = new JButton("Ajouter un type de pokemon");
-		addPokemonType.addActionListener(new ChangeCard("typePokemon", "Ajouter un type de pokemon", 700, 500));
-		accueil.add(addPokemonType);
-		
-		JButton addPokemonAbilitie = new JButton("Ajouter une capacité de pokemon");
-		addPokemonAbilitie.addActionListener(new ChangeCard("abilitiePokemon", "Ajouter une capacité de pokemon"));
-		accueil.add(addPokemonAbilitie);
+		JButton buttonUpdatePokemon = new JButton("Modifier un pokemon");
+		buttonUpdatePokemon.addActionListener(new ChangeCard("updatePokemon", "Modifier un pokemon"));
+		accueil.add(buttonUpdatePokemon);
 		
         this.cards = new JPanel(new CardLayout());
         this.cards.add(accueil, "accueil");
-        this.cards.add(getTemplateAddPokemon(), "addPokemon");
-        this.cards.add(getTemplateViewPokemon(), "viewPokemon");
-        this.cards.add(getTemplateTypePokemon(), "typePokemon");
+        this.cards.add(getTemplateAddPokemon("addPokemon"), "addPokemon");
+        this.cards.add(getTemplateViewPokemon("viewPokemon"), "viewPokemon");
         
         this.frame.add(cards);
 		
 	}
 	
-	private JPanel getTemplateAddPokemon(){
+	private JPanel getTemplateAddPokemon(String nameTemplate){
 		
 		JPanel template = new JPanel();
-		template.setLayout(new GridLayout(6, 2));
+		template.setName(nameTemplate);
 
 		Panel nameP = new Panel();
 		nameP.add(new JLabel("Nom :"));
@@ -159,10 +144,10 @@ public class Window{
 		return template;
 	}
 	
-	private JPanel getTemplateViewPokemon(){
+	private JPanel getTemplateViewPokemon(String nameTemplate){
 		
 		JPanel template = new JPanel();
-		template.setLayout(new GridLayout(6, 2));
+		template.setName(nameTemplate);
 		
 		List<Pokemon> pokemons = fileUtil.getPokemon();
 		
@@ -235,33 +220,15 @@ public class Window{
 		return template;
 	}
 	
-	private JPanel getTemplateTypePokemon(){
-		
-		JPanel template = new JPanel();
-		template.setLayout(new BorderLayout());
-		
-		Panel north = new Panel(); 
-		north.add(new JLabel("Nom du type :"));
-		JTextField name = new JTextField(20);
-		north.add(name);
-		template.add("North", north);
-	    
-	    JLabel banner = new JLabel("Welcome to the Tutorial Zone!", JLabel.CENTER);
-		banner.setForeground(Color.yellow);
-		JColorChooser colorPicker = new JColorChooser(banner.getForeground());
-	    template.add(colorPicker);
-	
-	    JButton home = new JButton("Accueil");
-		home.addActionListener(new ChangeCard("accueil", "Accueil"));
-		template.add("South", home);
-		
-		return template;
-	}
-	
 	public void pokemonUpdate(){
-        this.cards.removeAll();
-        this.cards.repaint();
-        this.addToFrame();
+		Component[] components = this.cards.getComponents();
+
+		for(int i = 0; i < components.length; i++) {
+		    if(components[i].getName().equals("viewPokemon")) {
+		    	this.cards.remove(components[i]);
+		        this.cards.add(getTemplateViewPokemon("viewPokemon"), "viewPokemon");
+		    }
+		}   
 	}
 	
 	public void itemChanged(String name) {

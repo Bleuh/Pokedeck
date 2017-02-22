@@ -1,13 +1,5 @@
 package application;
 
-import java.awt.Color;
-import java.util.ArrayList;
-
-import javax.swing.JFrame;
-
-import card.Abilitie;
-import card.Pokemon;
-import card.Type;
 import ui.Window;
 
 public class Application {
