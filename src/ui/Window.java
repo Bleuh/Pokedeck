@@ -4,7 +4,6 @@ import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -28,17 +27,18 @@ public class Window{
 	private static JPanel cards;
 	private static JFrame frame = new JFrame();
 	private FileUtil fileUtil;
-    private String name;
+    @SuppressWarnings("unused")
+	private String name;
     private final int tailleX = 500;
     private final int tailleY = 500;
 	
 	public Window(String name){
         this.name = name;
         this.fileUtil = new FileUtil("data.txt", this);
-        this.frame.setTitle(name);
-        this.frame.setSize (tailleX , tailleX);
-        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.frame.setLocationRelativeTo(null);
+        Window.frame.setTitle(name);
+        Window.frame.setSize (tailleX , tailleY);
+        Window.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        Window.frame.setLocationRelativeTo(null);
         this.addToFrame();
         
 	}
@@ -60,7 +60,7 @@ public class Window{
 	
 	private void addToFrame(){
 		JPanel accueil = new JPanel();
-		accueil.setLayout(new GridLayout(3, 3));
+		accueil.setLayout(new GridLayout(2, 3));
 		accueil.setName("accueil");
 		
 		JButton buttonAddPokemon = new JButton("Ajouter un pokemon");
@@ -71,12 +71,12 @@ public class Window{
 		buttonViewUpdatePokemon.addActionListener(new ChangeCard("viewUpdatePokemon", "Pokedex"));
 		accueil.add(buttonViewUpdatePokemon);
 		
-        this.cards = new JPanel(new CardLayout());
-        this.cards.add(accueil, "accueil");
-        this.cards.add(getTemplateAddPokemon("addPokemon"), "addPokemon");
-        this.cards.add(getTemplateViewUpdatePokemon("viewUpdatePokemon"), "viewUpdatePokemon");
+        Window.cards = new JPanel(new CardLayout());
+        Window.cards.add(accueil, "accueil");
+        Window.cards.add(getTemplateAddPokemon("addPokemon"), "addPokemon");
+        Window.cards.add(getTemplateViewUpdatePokemon("viewUpdatePokemon"), "viewUpdatePokemon");
         
-        this.frame.add(cards);
+        Window.frame.add(cards);
 		
 	}
 	
@@ -84,49 +84,40 @@ public class Window{
 		
 		JPanel template = new JPanel();
 		template.setName(nameTemplate);
+		template.setLayout(new GridLayout(5, 2));
 
-		Panel nameP = new Panel();
-		nameP.add(new JLabel("Nom :"));
+		template.add(new JLabel("Nom :"));
 		JTextField name = new JTextField(20);
-		nameP.add(name);
-		template.add(nameP);
+		template.add(name);
 	    
-		Panel hpP = new Panel();
-		hpP.add(new JLabel("Point de vie :"));
+		template.add(new JLabel("Point de vie :"));
 		JTextField hp = new JTextField(4);
-		hpP.add(hp);
-		template.add(hpP);
+		template.add(hp);
 		
-		Panel typeP = new Panel();
-		typeP.add(new JLabel("Type :"));
+		template.add(new JLabel("Type :"));
 		JComboBox<Object> combo = new JComboBox<Object>();
 		combo.setPreferredSize(new Dimension(100, 20));
 		for (Type type : Type.pokemonType) {
 		    combo.addItem(type);
 		}
-		typeP.add(combo);
-		template.add(typeP);
+		template.add(combo);
 	    
-	    Panel stageP = new Panel();
-	    stageP.add(new JLabel("Evolution :"));
+	    template.add(new JLabel("Evolution :"));
 	    JComboBox<Object> comboStage = new JComboBox<Object>();
 	    comboStage.setPreferredSize(new Dimension(100, 20));
 	    comboStage.addItem(1);
 	    comboStage.addItem(2);
 	    comboStage.addItem(3);
-	    stageP.add(comboStage);
-	    template.add(stageP);
+	    template.add(comboStage);
 	    
 	    JButton submit = new JButton("Ajouter");
 	    submit.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
 	        	if(name.getText().equals("")){
-	        		JOptionPane d = new JOptionPane();
-	        		d.showMessageDialog( frame, "Le nom est vide", "Erreur", JOptionPane.ERROR_MESSAGE);
+	        		JOptionPane.showMessageDialog( frame, "Le nom est vide", "Erreur", JOptionPane.ERROR_MESSAGE);
 	        	}
 	        	else if(hp.getText().equals("")){
-	        		JOptionPane d = new JOptionPane();
-	        		d.showMessageDialog( frame, "Les hp sont vide", "Erreur", JOptionPane.ERROR_MESSAGE);
+	        		JOptionPane.showMessageDialog( frame, "Les hp sont vide", "Erreur", JOptionPane.ERROR_MESSAGE);
 	        	}
 	        	else{
 		        	String pokemonName = name.getText();
@@ -155,10 +146,12 @@ public class Window{
 		
 		JPanel template = new JPanel();
 		template.setName(nameTemplate);
+		template.setLayout(new GridLayout(10, 2));
 		
 		List<Pokemon> pokemons = fileUtil.getPokemon();
 		
 		String firstName = "";
+		String firstID = "";
 		String firstHp = "";
 		int firstStage = 0;
 		Type firstType = null;
@@ -167,12 +160,14 @@ public class Window{
 			Pokemon firstPokemon = pokemons.get(0);
 			
 			firstName = firstPokemon.getPokemonName();
+			firstID = String.valueOf(firstPokemon.getId());
 			firstHp = String.valueOf(firstPokemon.getHp());
 			firstStage = firstPokemon.getStage() - 1; //index start to 0
 			firstType = firstPokemon.getType();
 		}
-		
+
 		JTextField name = new JTextField(firstName);
+		JLabel id = new JLabel(firstID);
 		JTextField hp = new JTextField(firstHp);
 		
 	    JComboBox<Object> comboStage = new JComboBox<Object>();
@@ -193,8 +188,7 @@ public class Window{
 		}
 		comboType.setSelectedIndex(indexType);
 
-		Panel dropdownP = new Panel();
-		dropdownP.add(new JLabel("Pokemon :"));
+		template.add(new JLabel("Pokemon :"));
 		JComboBox<Object> combo = new JComboBox<Object>();
 		combo.setPreferredSize(new Dimension(100, 20));
 		for (Pokemon pokemon : pokemons) {
@@ -207,6 +201,7 @@ public class Window{
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 			       Pokemon item = (Pokemon) e.getItem();
 			       name.setText(item.getPokemonName());
+			       id.setText(String.valueOf(item.getId()));
 			       hp.setText(String.valueOf(item.getHp()));
 			       comboStage.setSelectedIndex(item.getStage() - 1);
 			       int indexType = 0;int index = 0;
@@ -220,28 +215,22 @@ public class Window{
 			    }
 			}
 		});
-		dropdownP.add(combo);
-		template.add(dropdownP);
+		template.add(combo);
 	    
-	    Panel nameP = new Panel();
-	    nameP.add(new JLabel("Nom :"));
-	    nameP.add(name);
-	    template.add(nameP);
+	    template.add(new JLabel("Nom :"));
+	    template.add(name);
+	    
+	    template.add(new JLabel("ID :"));
+	    template.add(id);
 		
-	    Panel hpP = new Panel();
-	    hpP.add(new JLabel("Hp :"));
-	    hpP.add(hp);
-	    template.add(hpP);
+	    template.add(new JLabel("Hp :"));
+	    template.add(hp);
 		
-	    Panel stageP = new Panel();
-	    stageP.add(new JLabel("Stage :"));
-	    stageP.add(comboStage);
-	    template.add(stageP);
+	    template.add(new JLabel("Stage :"));
+	    template.add(comboStage);
 
-	    Panel typeP = new Panel();
-	    typeP.add(new JLabel("Type :"));
-	    typeP.add(comboType);
-	    template.add(typeP);
+	    template.add(new JLabel("Type :"));
+	    template.add(comboType);
 	    if(firstType != null){
 		    JButton submit = new JButton("Modifier");
 		    submit.addActionListener(new ActionListener() {
@@ -252,6 +241,8 @@ public class Window{
 		        	Type pokemonType = (Type)comboType.getSelectedItem();
 		        	Integer pokemonStage = (Integer)comboStage.getSelectedItem();
 		        	fileUtil.update(new Pokemon(pokemonName, pokemonHp ,pokemonType, pokemonStage, null), combo.getSelectedIndex());
+		        	
+	        		JOptionPane.showMessageDialog( frame, "Le pokemon a été modifier avec succes.", "Modifier", JOptionPane.INFORMATION_MESSAGE);
 		        	
 			        frame.setTitle("Accueil");
 			    	itemChanged("accueil");
@@ -265,6 +256,8 @@ public class Window{
 		        public void actionPerformed(ActionEvent e) {
 		        	fileUtil.delete(combo.getSelectedIndex());
 		        	
+	        		JOptionPane.showMessageDialog( frame, "Le pokemon a été supprimer avec succes.", "Supprimer", JOptionPane.INFORMATION_MESSAGE);
+		        	
 			        frame.setTitle("Accueil");
 			    	itemChanged("accueil");
 		        }
@@ -274,6 +267,56 @@ public class Window{
 	    	
 	    }
 	    
+	    template.add(new JLabel("Recherche par nom :"));
+		JTextField nameSearch = new JTextField(20);
+		template.add(nameSearch);
+	    
+	    template.add(new JLabel("Recherche par id :"));
+		JTextField idSearch = new JTextField(4);
+		template.add(idSearch);
+	    
+	    JButton search = new JButton("Recherche");
+	    search.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+	        	if(nameSearch.getText().equals("") && idSearch.getText().equals("")){
+	        		JOptionPane.showMessageDialog( frame, "Le nom et est vide", "Erreur", JOptionPane.ERROR_MESSAGE);
+	        	}
+	        	else{
+		           String pokemonName = nameSearch.getText();
+		           String pokemonID = idSearch.getText();
+		           boolean doubleSearch = true;
+		           if(pokemonName.equals("") || pokemonID.equals("")){
+		        	   doubleSearch = false;
+		           }
+
+			       int indexPokemon = -1;int index = 0;
+			       for (Pokemon pokemon : fileUtil.getPokemon()) {
+			    	   if(doubleSearch){
+						   if(pokemon.getPokemonName().equals(pokemonName) && String.valueOf(pokemon.getId()).equals(pokemonID)){
+							   indexPokemon = index;
+						   }
+			    	   }
+			    	   else{
+			    		   if(pokemon.getPokemonName().equals(pokemonName) || String.valueOf(pokemon.getId()).equals(pokemonID)){
+							   indexPokemon = index;
+						   }
+			    		   
+			    	   }
+					   index++;
+			       }
+			       
+			       if(indexPokemon == -1){
+		        		JOptionPane.showMessageDialog( frame, "Pas de pokemon trouvé", "Erreur", JOptionPane.ERROR_MESSAGE);
+			       }
+			       else{
+		        		JOptionPane.showMessageDialog( frame, "Un pokemon trouvé !" + System.lineSeparator() + "Critere de recherche :" + System.lineSeparator() + "Nom -> " + pokemonName + System.lineSeparator() + " ID -> " + pokemonID , "Recherche", JOptionPane.INFORMATION_MESSAGE);
+				        combo.setSelectedIndex(indexPokemon);
+			       }
+	        	}
+	        }
+	    });
+	    template.add(search);
+	    
 	    JButton home = new JButton("Accueil");
 		home.addActionListener(new ChangeCard("accueil", "Accueil"));
 		template.add(home);
@@ -282,12 +325,12 @@ public class Window{
 	}
 	
 	public void pokemonUpdate(){
-		Component[] components = this.cards.getComponents();
+		Component[] components = Window.cards.getComponents();
 
 		for(int i = 0; i < components.length; i++) {
 		    if(components[i].getName().equals("viewUpdatePokemon")) {
-		    	this.cards.remove(components[i]);
-		        this.cards.add(getTemplateViewUpdatePokemon("viewUpdatePokemon"), "viewUpdatePokemon");
+		    	Window.cards.remove(components[i]);
+		        Window.cards.add(getTemplateViewUpdatePokemon("viewUpdatePokemon"), "viewUpdatePokemon");
 		    }
 		}   
 	}
@@ -295,7 +338,7 @@ public class Window{
 	public void itemChanged(String name) {
         CardLayout cl = (CardLayout)(cards.getLayout());
         cl.show(cards, name);
-        this.frame.repaint();
+        Window.frame.repaint();
     }
 	
 	public void display(){

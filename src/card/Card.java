@@ -14,5 +14,9 @@ public abstract class Card {
 		this(name, count);
 		count++;
 	}
+	
+	public int getId(){
+		return number;
+	}
 
 }

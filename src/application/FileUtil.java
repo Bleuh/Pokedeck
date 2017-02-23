@@ -120,6 +120,7 @@ public class FileUtil {
 		window.pokemonUpdate();
 	}
 	
+	@SuppressWarnings("unchecked")
 	private JSONObject jsonmaker(Pokemon pokemon){
 		JSONObject obj = new JSONObject();
 		obj.put("name", pokemon.getPokemonName());

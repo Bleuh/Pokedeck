@@ -1,6 +1,5 @@
 package card;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Pokemon extends Card{

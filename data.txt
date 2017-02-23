@@ -1,3 +1,3 @@
-{"abilities":[],"stage":1,"name":"TETE","hp":12,"type":{"color":-16776961,"name":"EAU"}}
-{"abilities":[],"stage":1,"name":"noraml","hp":74,"type":{"color":-8355712,"name":"NORMAL"}}
-{"abilities":[],"stage":1,"name":"tt","hp":11,"type":{"color":-16776961,"name":"EAU"}}
+{"abilities":[],"stage":1,"name":"normal","hp":74,"type":{"color":-8355712,"name":"NORMAL"}}
+{"abilities":[],"stage":1,"name":"salut","hp":14,"type":{"color":-4144960,"name":"ACIER"}}
+{"abilities":[],"stage":2,"name":"Bastien","hp":15,"type":{"color":-65281,"name":"POISON"}}
