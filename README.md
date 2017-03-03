@@ -8,11 +8,11 @@ Il est possible que la library soit manquante, si cela se produit il faudra l'aj
 
 
 ## Somaire
- - Architecture (Diagramme de classe)
- - Fonctionnement et fonction implémenté
-  - Utilisateur
-  - Technique
- - Conclusion
+ - [Architecture (Diagramme de classe)](#architecture)
+ - [Fonctionnement et fonction implémenté](#fonctionnement-et-fonction-implémenté)
+  - [Utilisateur](#utilisateur)
+  - [Technique](#technique)
+ - [Conclusion](#conclusion)
 
 
 ----------
@@ -21,8 +21,11 @@ Il est possible que la library soit manquante, si cela se produit il faudra l'aj
 
 ![enter image description here](https://lh3.googleusercontent.com/-5PT7FlbCd2E/WLgh0woxi1I/AAAAAAAACTA/9VddTEUSj4cr_LJPyQSlVjq0Kodk3sZ_wCLcB/s0/Diagramme+de+classe+java.png "Diagramme de classe java.png")
 Card est abstract.
+
 Pokemon contient un Type et plusieurs Abilitie.
+
 FileUtil gère les fichiers de sauvegarde et contiens un liste de Pokemon.
+
 Window gère l'interface utilisateur.
 
 
